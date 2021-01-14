@@ -1,0 +1,7 @@
+---
+connection: local
+
+provider:
+  password: "{{ panos_password }}"
+  username: "{{ panos_user }}"
+  ip_address: "{{ ansible_host }}"

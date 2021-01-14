@@ -1,0 +1,11 @@
+network_subnets:
+  Dev:
+    vip_subnet: "10.1.1.0/24"
+    public_subnet: "100.1.1.0/24"
+
+mattermost_token: abc123
+mattermost_url: "https://mattermost.com"
+
+netbox_url: "http://netbox.com"
+
+jira_url: "https://myjira.atlassian.net"

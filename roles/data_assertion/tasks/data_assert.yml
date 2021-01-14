@@ -1,0 +1,40 @@
+- name: Confirm that required data is present
+  block:
+    - name: Assert Customer Name
+      assert:
+        that:
+          - customer_name | length > 0
+        success_msg: "Customer Name field is valid"
+        fail_msg: "Customer Name field is empty"
+
+    - name: Assert Custome Whitelist
+      assert:
+        that:
+          - customer_whitelist | length > 0
+        success_msg: "Customer Whitelist field is valid"
+        fail_msg: "Customer Whitelist field is empty"
+
+    - name: Assert Network Environment
+      assert:
+        that:
+          - network_environment | length > 0
+        success_msg: "Network Environment field is valid"
+        fail_msg: "Network Environment field is empty"
+
+    - name: Assert F5 VIP Name
+      assert:
+        that:
+          - f5_vip_name | length > 0
+        success_msg: "F5 VIP Name field is valid"
+        fail_msg: "F5 VIP Name field is empty"
+
+  rescue:
+    - name: Set Failure Message
+      set_stats:
+        data:
+          fail_msg: "Data validation failed. This could be from missing required field data."
+
+    - name:
+      debug:
+        msg: "Data assertions failed"
+      failed_when: true

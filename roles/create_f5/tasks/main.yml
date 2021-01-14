@@ -1,0 +1,26 @@
+---
+- name: Create F5 VIP
+  block:
+    - name: Set App Dictionary as Fact
+      set_fact:
+        app_dict: "{{ app_settings[network_environment][application_type] }}"
+      when: ansible_network_os == 'f5'
+
+    - name: Create F5 VIP
+      bigip_virtual_server:
+        state: present
+        name: "{{ f5_vip_name }}"
+        destination: "{{ private_ip | ipaddr('address') }}"
+        port: "443"
+        pool: "{{ app_dict.pool }}"
+        description: "{{ customer_name }} {{ application_type }}"
+        profiles: "{{ app_dict.f5_profiles }}"
+        provider: "{{ provider }}"
+      delegate_to: localhost
+      when: ansible_network_os == 'f5'
+
+  rescue:
+    - name: Set Failure Message
+      set_stats:
+        data:
+          fail_msg: "Failed to create F5 VIP"

@@ -1,0 +1,5 @@
+- hosts: paloalto1
+  gather_facts: false
+
+  roles:
+    - create_paloalto

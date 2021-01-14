@@ -1,0 +1,14 @@
+{
+  "update": {
+    "comment": [
+      {
+        "add": {
+          "body": "{{ fail_msg | default('An unknown error has occurred during playbook execution.') }}\nJob Details: {{ job_url }}"
+        }
+      }
+    ]
+  },
+  "transition": {
+    "id": "951"
+  }
+}

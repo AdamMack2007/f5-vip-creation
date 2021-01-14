@@ -1,0 +1,14 @@
+{
+  "update": {
+    "comment": [
+      {
+        "add": {
+          "body": "Missing field data detected. Please ensure that the following fields are filled in (Application Type, Customer Name, Customer Whitelist, F5 Environment, F5 VIP Name)."
+        }
+      }
+    ]
+  },
+  "transition": {
+    "id": "981"
+  }
+}

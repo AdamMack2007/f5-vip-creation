@@ -1,0 +1,83 @@
+---
+- name: Configure Palo Alto Objects
+  block:
+    - name: Set Customer IPs as Fact
+      set_fact:
+        customer_ips: "{{ customer_whitelist.split(',') }}"
+        private_ip_name: "{{ f5_vip_name }}_{{ private_ip | ipaddr('address') }}"
+        public_ip_name: "{{ f5_vip_name }}_{{ public_ip | ipaddr('address') }}"
+      when: ansible_network_os == 'panos'
+      delegate_to: localhost
+
+    - name: Create Private IP Object
+      paloaltonetworks.panos.panos_address_object:
+        provider: "{{ provider }}"
+        name: "{{ private_ip_name }}" #Created above
+        commit: no
+        address_type: "ip-netmask"
+        value: "{{ private_ip | ipaddr('address') }}"
+        description: "{{ application_type }} Private VIP IP for {{ customer_name }}"
+      delegate_to: localhost
+      when: ansible_network_os == 'panos'
+
+    - name: Create Public IP Object
+      paloaltonetworks.panos.panos_address_object:
+        provider: "{{ provider }}"
+        name: "{{ public_ip_name }}" #Created above
+        commit: no
+        address_type: "ip-netmask"
+        value: "{{ public_ip | ipaddr('address') }}"
+        description: "{{ application_type }} Public VIP IP for {{ customer_name }}"
+      delegate_to: localhost
+      when: ansible_network_os == 'panos'
+
+    - name: Create Customer Tag
+      paloaltonetworks.panos.panos_tag_object:
+        provider: "{{ provider }}"
+        color: blue
+        name: "{{ application_type }}_{{customer_name }}"
+        commit: no
+      delegate_to: localhost
+      when: ansible_network_os == 'panos'
+
+    - name: Create Customer IP Objects
+      paloaltonetworks.panos.panos_address_object:
+        provider: "{{ provider }}"
+        name: "{{ application_type }}_{{ customer_name }}_{% if '/' in item %}{{ item | replace('/','_')|trim }}{% else %}{{ item|trim }}{% endif %}"
+        commit: no
+        address_type: "{% if item | ipaddr() %}ip-netmask{% else %}fqdn{% endif %}"
+        value: "{{ item|trim }}"
+        description: "{{ customer_name }} {{ application_type }} whitelist IP"
+        tag: "{{ application_type }}_{{customer_name }}"
+      loop: "{{ customer_ips }}"
+      delegate_to: localhost
+      when: ansible_network_os == 'panos'
+
+    - name: Create Customer Address Group
+      paloaltonetworks.panos.panos_address_group:
+        provider: "{{ provider }}"
+        name: "{{ application_type }}_{{customer_name }}"
+        dynamic_value: "{{ application_type }}_{{customer_name }}"
+        commit: no
+      delegate_to: localhost
+      when: ansible_network_os == 'panos'
+
+    - name: Create Customer Security Policy
+      paloaltonetworks.panos.panos_security_rule:
+        provider: "{{ provider }}"
+        commit: no
+        rule_name: "ACL_{{ application_type }}_{{customer_name }}"
+        action: allow
+        destination_ip: "{{ private_ip_name }}"
+        destination_zone: [Lab]
+        service: [service-https]
+        source_ip: "{{ application_type }}_{{customer_name }}"
+        source_zone: [WAN]
+        log_end: true
+      delegate_to: localhost
+      when: ansible_network_os == 'panos'
+  rescue:
+    - name: Set Failure Message
+      set_stats:
+        data:
+          fail_msg: "Failed to configure Palo Alto objects"

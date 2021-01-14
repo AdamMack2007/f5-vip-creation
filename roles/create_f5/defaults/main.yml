@@ -1,0 +1,26 @@
+---
+provider:
+  server: "{{ ansible_host }}"
+  timeout: 30
+  server_port: 443
+  validate_certs: no
+
+app_settings:
+  Dev:
+    API:
+      f5_profiles:
+        - http
+        - tcp
+        - name: DEV_API
+          context: client-side
+      pool: POOL_API
+      asm_policy: ASM_DEV_API
+  Prod:
+    API:
+      f5_profiles:
+        - http
+        - tcp
+        - name: PROD_API
+          context: client-side
+      pool: POOL_API
+      asm_policy: ASM_PROD_API

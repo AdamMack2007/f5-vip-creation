@@ -1,0 +1,14 @@
+{
+  "update": {
+    "comment": [
+      {
+        "add": {
+          "body": "Successfully created VIP {{ f5_vip_name }} for {{ customer_name }}\nPublic IP: {{ public_ip | ipaddr('address') }}\nPrivate IP: {{ private_ip | ipaddr('address') }}\nJob Details: {{ job_url }}"
+        }
+      }
+    ]
+  },
+  "transition": {
+    "id": "871"
+  }
+}
