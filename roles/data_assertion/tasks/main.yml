@@ -2,7 +2,7 @@
 - name: Set Workflow ID as Fact
   set_stats:
     data:
-      job_url: "https://ansible.mackdev.net/#/workflows/{{ tower_workflow_job_id }}"
+      job_url: https://ansible.mackdev.net/#/workflows/{{ tower_workflow_job_id }}
 
 - name: Include Data Assert Tasks
   include_tasks: data_assert.yml

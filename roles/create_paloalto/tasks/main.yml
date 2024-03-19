@@ -13,8 +13,8 @@
       paloaltonetworks.panos.panos_address_object:
         provider: "{{ provider }}"
         name: "{{ private_ip_name }}" #Created above
-        commit: no
-        address_type: "ip-netmask"
+        commit: false
+        address_type: ip-netmask
         value: "{{ private_ip | ipaddr('address') }}"
         description: "{{ application_type }} Private VIP IP for {{ customer_name }}"
       delegate_to: localhost
@@ -24,8 +24,8 @@
       paloaltonetworks.panos.panos_address_object:
         provider: "{{ provider }}"
         name: "{{ public_ip_name }}" #Created above
-        commit: no
-        address_type: "ip-netmask"
+        commit: false
+        address_type: ip-netmask
         value: "{{ public_ip | ipaddr('address') }}"
         description: "{{ application_type }} Public VIP IP for {{ customer_name }}"
       delegate_to: localhost
@@ -36,7 +36,7 @@
         provider: "{{ provider }}"
         color: blue
         name: "{{ application_type }}_{{customer_name }}"
-        commit: no
+        commit: false
       delegate_to: localhost
       when: ansible_network_os == 'panos'
 
@@ -44,7 +44,7 @@
       paloaltonetworks.panos.panos_address_object:
         provider: "{{ provider }}"
         name: "{{ application_type }}_{{ customer_name }}_{% if '/' in item %}{{ item | replace('/','_')|trim }}{% else %}{{ item|trim }}{% endif %}"
-        commit: no
+        commit: false
         address_type: "{% if item | ipaddr() %}ip-netmask{% else %}fqdn{% endif %}"
         value: "{{ item|trim }}"
         description: "{{ customer_name }} {{ application_type }} whitelist IP"
@@ -58,15 +58,15 @@
         provider: "{{ provider }}"
         name: "{{ application_type }}_{{customer_name }}"
         dynamic_value: "{{ application_type }}_{{customer_name }}"
-        commit: no
+        commit: false
       delegate_to: localhost
       when: ansible_network_os == 'panos'
 
     - name: Create Customer Security Policy
       paloaltonetworks.panos.panos_security_rule:
         provider: "{{ provider }}"
-        commit: no
-        rule_name: "ACL_{{ application_type }}_{{customer_name }}"
+        commit: false
+        rule_name: ACL_{{ application_type }}_{{customer_name }}
         action: allow
         destination_ip: "{{ private_ip_name }}"
         destination_zone: [Lab]
@@ -80,4 +80,4 @@
     - name: Set Failure Message
       set_stats:
         data:
-          fail_msg: "Failed to configure Palo Alto objects"
+          fail_msg: Failed to configure Palo Alto objects
