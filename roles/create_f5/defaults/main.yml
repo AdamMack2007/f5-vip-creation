@@ -3,7 +3,7 @@ provider:
   server: "{{ ansible_host }}"
   timeout: 30
   server_port: 443
-  validate_certs: no
+  validate_certs: false
 
 app_settings:
   Dev:

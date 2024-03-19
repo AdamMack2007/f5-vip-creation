@@ -1,3 +1,4 @@
+---
 - hosts: lb1
   gather_facts: false
 

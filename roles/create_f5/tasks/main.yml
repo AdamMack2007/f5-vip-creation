@@ -23,4 +23,4 @@
     - name: Set Failure Message
       set_stats:
         data:
-          fail_msg: "Failed to create F5 VIP"
+          fail_msg: Failed to create F5 VIP

@@ -1,3 +1,4 @@
+---
 - name: Get IP Addresses for VIP
   block:
     - name: Get New Private IP
@@ -36,11 +37,11 @@
         url: "{{ mattermost_url }}"
         api_key: "{{ mattermost_token }}"
         channel: netops
-        text: "Failed to get IP addresses for {{ ticket }} {{ ticket_link }}."
-        validate_certs: no
+        text: Failed to get IP addresses for {{ ticket }} {{ ticket_link }}.
+        validate_certs: false
       run_once: true
       delegate_to: localhost
 
     - name: Set Failure Message
       set_stats:
-        fail_msg: "Failed to obtain IPs from Netbox"
+        fail_msg: Failed to obtain IPs from Netbox

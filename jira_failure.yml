@@ -1,17 +1,18 @@
+---
 - hosts: all
   gather_facts: false
 
   tasks:
     - name: Change Jira Ticket Status Failure
       uri:
-        url: "https://{{ jira_url }}/rest/api/2/issue/{{ ticket }}/transitions"
+        url: https://{{ jira_url }}/rest/api/2/issue/{{ ticket }}/transitions
         user: "{{ jira_id }}"
         password: "{{ jira_token }}"
         method: POST
         headers:
           Accept: application/json
         body: "{{ lookup('template','jira_failure.json') }}"
-        force_basic_auth: yes
+        force_basic_auth: true
         status_code: [200, 201, 204]
         body_format: json
       delegate_to: localhost
@@ -23,6 +24,6 @@
         api_key: "{{ mattermost_token }}"
         channel: netops
         text: "{{ fail_msg | default('An unknown error has occurred during playbook execution.') }}\nJob Details: {{ job_url }}"
-        validate_certs: no
+        validate_certs: false
       run_once: true
       delegate_to: localhost
