@@ -1,0 +1,48 @@
+---
+- name: Update an Change Request - Success
+  servicenow.servicenow.snow_record:
+    username: "{{ snow_user }}"
+    password: "{{ snow_password }}"
+    instance: "{{ snow_id }}"
+    state: present
+    table: sc_req_item
+    number: "{{ ritm }}"
+    data:
+      comments: "{{ lookup('template','templates/success.j2') }}"
+  delegate_to: localhost
+  when: fail_msg is not defined
+
+- name: Update an Change Request - Failure
+  servicenow.servicenow.snow_record:
+    username: "{{ snow_user }}"
+    password: "{{ snow_password }}"
+    instance: "{{ snow_id }}"
+    state: present
+    table: sc_req_item
+    number: "{{ ritm }}"
+    data:
+      comments: "{{ lookup('template','templates/failure.j2') }}"
+  delegate_to: localhost
+  when: fail_msg is defined
+
+- name: Send Mattermost Success Message
+  community.general.mattermost:
+    url: https://192.168.6.102
+    api_key: dpd6hwgymidzzfkoca9aheyzhy
+    channel: netops
+    text: "{{ lookup('template','templates/success.j2') }}"
+    validate_certs: no
+  run_once: true
+  delegate_to: localhost
+  when: fail_msg is not defined
+
+- name: Send Mattermost Fail Message
+  community.general.mattermost:
+    url: https://192.168.6.102
+    api_key: dpd6hwgymidzzfkoca9aheyzhy
+    channel: netops
+    text: "{{ lookup('template','templates/failure.j2') }}"
+    validate_certs: no
+  run_once: true
+  delegate_to: localhost
+  when: fail_msg is defined

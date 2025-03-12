@@ -1,0 +1,6 @@
+- name: Update SNOW Requests
+  hosts: localhost
+  gather_facts: no
+
+  roles:
+    - snow_update

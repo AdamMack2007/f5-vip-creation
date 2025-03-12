@@ -4,8 +4,8 @@
     - name: Set Customer IPs as Fact
       set_fact:
         customer_ips: "{{ customer_whitelist.split(',') }}"
-        private_ip_name: "{{ f5_vip_name }}_{{ private_ip | ipaddr('address') }}"
-        public_ip_name: "{{ f5_vip_name }}_{{ public_ip | ipaddr('address') }}"
+        private_ip_name: "{{ f5_vip_name }}_{{ private_ip }}"
+        public_ip_name: "{{ f5_vip_name }}_{{ public_ip }}"
       when: ansible_network_os == 'panos'
       delegate_to: localhost
 
@@ -15,7 +15,7 @@
         name: "{{ private_ip_name }}" #Created above
         commit: no
         address_type: "ip-netmask"
-        value: "{{ private_ip | ipaddr('address') }}"
+        value: "{{ private_ip }}"
         description: "{{ application_type }} Private VIP IP for {{ customer_name }}"
       delegate_to: localhost
       when: ansible_network_os == 'panos'
@@ -26,7 +26,7 @@
         name: "{{ public_ip_name }}" #Created above
         commit: no
         address_type: "ip-netmask"
-        value: "{{ public_ip | ipaddr('address') }}"
+        value: "{{ public_ip }}"
         description: "{{ application_type }} Public VIP IP for {{ customer_name }}"
       delegate_to: localhost
       when: ansible_network_os == 'panos'
@@ -45,7 +45,7 @@
         provider: "{{ provider }}"
         name: "{{ application_type }}_{{ customer_name }}_{% if '/' in item %}{{ item | replace('/','_')|trim }}{% else %}{{ item|trim }}{% endif %}"
         commit: no
-        address_type: "{% if item | ipaddr() %}ip-netmask{% else %}fqdn{% endif %}"
+        address_type: "{% if item | ansible.utils.ipaddr() %}ip-netmask{% else %}fqdn{% endif %}"
         value: "{{ item|trim }}"
         description: "{{ customer_name }} {{ application_type }} whitelist IP"
         tag: "{{ application_type }}_{{customer_name }}"
@@ -81,3 +81,4 @@
       set_stats:
         data:
           fail_msg: "Failed to configure Palo Alto objects"
+      failed_when: yes

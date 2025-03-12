@@ -2,4 +2,4 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - roles/create_f5
+    - roles/snow_update

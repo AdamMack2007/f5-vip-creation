@@ -11,7 +11,7 @@ app_settings:
       f5_profiles:
         - http
         - tcp
-        - name: DEV_API
+        - name: SSL_CLIENT_DEFAULT
           context: client-side
       pool: POOL_API
       asm_policy: ASM_DEV_API

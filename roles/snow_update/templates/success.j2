@@ -1,0 +1,13 @@
+F5 VIP created successfully
+
+  Name: {{ f5_vip_name }}
+  Customer: {{ customer_name }}
+  Public IP: {{ public_ip }}
+  Private IP: {{ private_ip }}
+  F5 Pool: {{ f5_app_dict.pool }}
+  F5 ASM Policy: {{ f5_app_dict.asm_policy | default('') }}
+  Job Details: {{ job_url }}
+
+DNS Record Created Successfully
+
+CloudFlare: {{ f5_vip_name }}

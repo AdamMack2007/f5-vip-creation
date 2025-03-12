@@ -1,9 +1,10 @@
 - name: Get IP Addresses for VIP
   block:
     - name: Get New Private IP
-      netbox_ip_address:
+      netbox.netbox.netbox_ip_address:
         netbox_url: "{{ netbox_url }}"
         netbox_token: "{{ netbox_token }}"
+        validate_certs: no
         data:
           prefix: "{{ network_subnets[network_environment]['vip_subnet'] }}"
         state: new
@@ -12,10 +13,12 @@
       run_once: true
 
     - name: Get New Public IP
-      netbox_ip_address:
+      netbox.netbox.netbox_ip_address:
         netbox_url: "{{ netbox_url }}"
         netbox_token: "{{ netbox_token }}"
+        validate_certs: no
         data:
+          dns_name: "{{ f5_vip_name }}"
           prefix: "{{ network_subnets[network_environment]['public_subnet'] }}"
         state: new
       register: public_ip
@@ -25,14 +28,14 @@
     - name: Set IP info as Fact
       set_stats:
         data:
-          private_ip: "{{ private_ip.ip_address.address }}"
-          public_ip: "{{ public_ip.ip_address.address }}"
+          private_ip: "{{ private_ip.ip_address.address | ansible.utils.ipaddr('address') }}"
+          public_ip: "{{ public_ip.ip_address.address | ansible.utils.ipaddr('address') }}"
       delegate_to: localhost
       run_once: true
 
   rescue:
     - name: Send Mattermost Failure Message
-      mattermost:
+      community.general.mattermost:
         url: "{{ mattermost_url }}"
         api_key: "{{ mattermost_token }}"
         channel: netops
@@ -43,4 +46,6 @@
 
     - name: Set Failure Message
       set_stats:
-        fail_msg: "Failed to obtain IPs from Netbox"
+        data:
+          fail_msg: "Failed to obtain IPs from Netbox"
+      failed_when: yes

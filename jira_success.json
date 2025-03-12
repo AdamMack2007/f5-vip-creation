@@ -3,7 +3,7 @@
     "comment": [
       {
         "add": {
-          "body": "Successfully created VIP {{ f5_vip_name }} for {{ customer_name }}\nPublic IP: {{ public_ip | ipaddr('address') }}\nPrivate IP: {{ private_ip | ipaddr('address') }}\nJob Details: {{ job_url }}"
+          "body": "Successfully created VIP {{ f5_vip_name }} for {{ customer_name }}\nPublic IP: {{ public_ip }}\nPrivate IP: {{ private_ip }}\nJob Details: {{ job_url }}"
         }
       }
     ]

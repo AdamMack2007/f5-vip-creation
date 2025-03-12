@@ -33,8 +33,4 @@
       set_stats:
         data:
           fail_msg: "Data validation failed. This could be from missing required field data."
-
-    - name:
-      debug:
-        msg: "Data assertions failed"
       failed_when: true

@@ -3,9 +3,29 @@ network_subnets:
     vip_subnet: "10.1.1.0/24"
     public_subnet: "100.1.1.0/24"
 
-mattermost_token: abc123
-mattermost_url: "https://mattermost.com"
+app_settings:
+  Dev:
+    API:
+      f5_profiles:
+        - http
+        - tcp
+        - name: SSL_CLIENT_DEFAULT
+          context: client-side
+      pool: POOL_API
+      asm_policy: ASM_DEV_API
+  Prod:
+    API:
+      f5_profiles:
+        - http
+        - tcp
+        - name: PROD_API
+          context: client-side
+      pool: POOL_API
+      asm_policy: ASM_PROD_API
 
-netbox_url: "http://netbox.com"
+mattermost_token: dpd6hwgymidzzfkoca9aheyzhy
+mattermost_url: "https://192.168.6.102"
 
-jira_url: "https://myjira.atlassian.net"
+netbox_url: "https://192.168.10.169"
+
+jira_url: "https://macknet.atlassian.net"

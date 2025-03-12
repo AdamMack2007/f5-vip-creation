@@ -1,0 +1,9 @@
+---
+# defaults file for roles/snow_update
+
+instance_id: dev107947
+
+instance:
+  host: https://dev107947.service-now.com
+  username: "{{ snow_user }}"
+  password: "{{ snow_password }}"

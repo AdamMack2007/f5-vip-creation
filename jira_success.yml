@@ -1,10 +1,28 @@
-- hosts: all
+- hosts: lb1
   gather_facts: false
 
   tasks:
+    #- name: Add Success Comment to Ticket
+    #  uri:
+    #    url: "https://macknet.atlassian.net/rest/api/2/issue/{{ ticket }}/comment"
+    #    user: "{{ jira_id }}"
+    #    password: "{{ jira_token }}"
+    #    method: POST
+    #    headers:
+    #      Accept: application/json
+    #    body:
+    #      {
+    #        "body": "Successfully created VIP {{ f5_vip_name }} for {{ customer_name }}\nPublic IP: {{ public_ip | ipaddr('address') }}\nPrivate IP: {{ private_ip | ipaddr('address') }}\nJob Details: {{ job_url }}",
+    #      }
+    #    force_basic_auth: yes
+    #    status_code: [200, 201, 204]
+    #    body_format: json
+    #  delegate_to: localhost
+    #  run_once: true
+
     - name: Change Jira Ticket Status Successful
-      uri:
-        url: "https://{{ jira_url }}/rest/api/2/issue/{{ ticket }}/transitions"
+      ansible.builtin.uri:
+        url: "https://macknet.atlassian.net/rest/api/2/issue/{{ ticket }}/transitions"
         user: "{{ jira_id }}"
         password: "{{ jira_token }}"
         method: POST
@@ -18,9 +36,9 @@
       run_once: true
 
     - name: Send Mattermost Success Message
-      mattermost:
-        url: "{{ mattermost_url }}"
-        api_key: "{{ mattermost_token }}"
+      community.general.mattermost:
+        url: https://192.168.6.102
+        api_key: dpd6hwgymidzzfkoca9aheyzhy
         channel: netops
         text: "Successfully created {{ f5_vip_name }} for {{ customer_name }}\nTicket: {{ ticket_link }}\nPublic IP: {{ public_ip }}\nPrivate IP: {{ private_ip }}\nJob Details: {{ job_url }}"
         validate_certs: no
