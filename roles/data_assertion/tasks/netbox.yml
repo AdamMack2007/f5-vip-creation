@@ -39,7 +39,7 @@
         url: "{{ mattermost_url }}"
         api_key: "{{ mattermost_token }}"
         channel: netops
-        text: "Failed to get IP addresses for {{ ticket }} {{ ticket_link }}."
+        text: "Failed to get IP addresses for {{ ritm }}"
         validate_certs: no
       run_once: true
       delegate_to: localhost
